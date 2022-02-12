@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Check that all text files end in a trailing newline
           command: ./dev-scripts/check-trailing-newline
-  test_go:
+  test:
     docker:
       - image: cimg/go:1.17.4
     resource_class: medium
@@ -30,7 +30,7 @@ jobs:
           command: dev-scripts/check-formatting
 workflows:
   version: 2
-  test_deploy:
+  build:
     jobs:
       - check_whitespace
       - test
