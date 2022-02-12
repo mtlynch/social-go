@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>social: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/mtlynch/social-go/v2/social/parse.go (89.4%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package social
+
+import (
+        "errors"
+        "fmt"
+        "net/url"
+        "regexp"
+        "strings"
+)
+
+var (
+        ErrInvalidFacebookUsername = errors.New("invalid facebook username")
+        ErrInvalidInstagram        = errors.New("invalid instagram handle")
+        ErrInvalidTwitterURL       = errors.New("invalid twitter URL")
+        ErrInvalidTwitterHandle    = errors.New("invalid twitter handle")
+
+        facebookUsernamePattern = regexp.MustCompile(`^[a-zA-Z0-9\.\-]{1,60}$`)
+        instagramHandlePattern  = regexp.MustCompile(`^[a-zA-Z0-9_\.]{1,30}$`)
+        twitterHandlePattern    = regexp.MustCompile("^[A-Za-z0-9_]{4,15}$")
+)
+
+func ParseFacebookUsername(username string) (FacebookUsername, error) <span class="cov1" title="1">{
+        if strings.ContainsAny(username, "@") </span><span class="cov0" title="0">{
+                return FacebookUsername(""), ErrInvalidFacebookUsername
+        }</span>
+
+        <span class="cov1" title="1">fb, err := parseSocialMediaUsername(username)
+        if err != nil </span><span class="cov0" title="0">{
+                return FacebookUsername(""), ErrInvalidFacebookUsername
+        }</span>
+
+        <span class="cov1" title="1">if !facebookUsernamePattern.MatchString(fb) </span><span class="cov0" title="0">{
+                return FacebookUsername(""), ErrInvalidFacebookUsername
+        }</span>
+        <span class="cov1" title="1">return FacebookUsername(fb), nil</span>
+}
+
+// InstagramHandle parses an InstagramHandle from either a raw string or a URL
+// that includes the user's handle.
+func ParseInstagramHandle(s string) (InstagramHandle, error) <span class="cov5" title="16">{
+        insta, err := parseSocialMediaUsername(s)
+        if err != nil </span><span class="cov2" title="2">{
+                return InstagramHandle(""), ErrInvalidInstagram
+        }</span>
+
+        <span class="cov5" title="14">if !instagramHandlePattern.MatchString(insta) </span><span class="cov4" title="6">{
+                return InstagramHandle(""), ErrInvalidInstagram
+        }</span>
+
+        <span class="cov4" title="8">return InstagramHandle(insta), nil</span>
+}
+
+// TwitterHandle parses a TwitterHandle from a raw URL or handle string,
+// validating that the handle matches Twitter's restrictions on handles.
+func ParseTwitterHandle(twitterURL string) (TwitterHandle, error) <span class="cov6" title="18">{
+        t, err := parseSocialMediaUsername(twitterURL)
+        if err != nil </span><span class="cov2" title="2">{
+                return TwitterHandle(""), ErrInvalidTwitterURL
+        }</span>
+        <span class="cov5" title="16">if t == "" </span><span class="cov1" title="1">{
+                return TwitterHandle(""), ErrInvalidTwitterURL
+        }</span>
+
+        <span class="cov5" title="15">if !twitterHandlePattern.MatchString(t) </span><span class="cov4" title="7">{
+                return TwitterHandle(""), ErrInvalidTwitterHandle
+        }</span>
+        <span class="cov4" title="8">return TwitterHandle(t), nil</span>
+}
+
+func parseSocialMediaUsername(s string) (string, error) <span class="cov7" title="35">{
+        cleaned := strings.TrimSpace(s)
+        if len(cleaned) == 0 </span><span class="cov2" title="2">{
+                return "", nil
+        }</span>
+        // Short-circuit the logic if there's no URL, just a username.
+        <span class="cov7" title="33">if !strings.Contains(cleaned, "/") </span><span class="cov5" title="15">{
+                return stripLeadingAtSymbol(s), nil
+        }</span>
+
+        <span class="cov6" title="18">u, err := parseURL(cleaned)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov6" title="18">if u.Scheme != "http" &amp;&amp; u.Scheme != "https" </span><span class="cov1" title="1">{
+                return "", fmt.Errorf("invalid URL scheme: %v", u.Scheme)
+        }</span>
+
+        <span class="cov5" title="17">splitFn := func(c rune) bool </span><span class="cov10" title="171">{
+                return c == '/'
+        }</span>
+        <span class="cov5" title="17">pathParts := strings.FieldsFunc(u.Path, splitFn)
+        if len(pathParts) == 0 || len(pathParts[0]) == 0 </span><span class="cov2" title="3">{
+                return "", fmt.Errorf("invalid social media URL: %s - bad path: %s", s, u.Path)
+        }</span>
+        <span class="cov5" title="14">return stripLeadingAtSymbol(pathParts[0]), nil</span>
+}
+
+func stripLeadingAtSymbol(s string) string <span class="cov6" title="29">{
+        if strings.HasPrefix(s, "@") </span><span class="cov3" title="4">{
+                return s[1:]
+        }</span>
+        <span class="cov6" title="25">return s</span>
+}
+
+func parseURL(s string) (*url.URL, error) <span class="cov6" title="18">{
+        u, err := url.Parse(s)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov6" title="18">if u.Scheme != "" </span><span class="cov5" title="17">{
+                return u, nil
+        }</span>
+        <span class="cov1" title="1">return url.Parse("https://" + s)</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

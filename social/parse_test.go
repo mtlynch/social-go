@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mtlynch/social-go"
+	"github.com/mtlynch/social-go/v2/social"
 )
 
 func TestParseFacebookUsername(t *testing.T) {
@@ -98,9 +98,11 @@ func TestParseFacebookUsername(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		_, err := social.ParseFacebookUsername(tt.username)
-		if (err == nil) != tt.validExpected {
-			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.username, err, tt.validExpected)
+		actualUsername, err := social.ParseFacebookUsername(tt.in)
+		if err != tt.expectedErr {
+			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, err, tt.expectedErr)
+		} else if actualUsername != tt.expectedUsername {
+			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, err, tt.expectedErr)
 		}
 	}
 }
@@ -140,25 +142,25 @@ func TestParseInstagramHandle(t *testing.T) {
 			"empty string is invalid",
 			"",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"missing handle is invalid",
 			"https://instagram.com",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"missing handle is invalid",
 			"https://instagram.com/",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"missing handle is invalid",
 			"https://instagram.com/@",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"single character handle is valid",
@@ -182,19 +184,19 @@ func TestParseInstagramHandle(t *testing.T) {
 			"leading space character is invalid",
 			" jack",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"trailing space character is invalid",
 			"jack ",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"internal tab character is invalid",
 			"jerry\tseinfeld",
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 		{
 			"handle with exactly 30 characters is valid",
@@ -206,18 +208,12 @@ func TestParseInstagramHandle(t *testing.T) {
 			"handle with more than 30 characters is invalid",
 			"https://instagram.com/" + strings.Repeat("A", 31),
 			social.InstagramHandle(""),
-			ErrInvalidInstagram,
-		},
-		{
-			"'undefined' as a URL is invalid",
-			"undefined",
-			social.InstagramHandle(""),
-			ErrInvalidInstagram,
+			social.ErrInvalidInstagram,
 		},
 	}
 
 	for _, tt := range tests {
-		handle, err := ParseInstagramHandle(tt.in)
+		handle, err := social.ParseInstagramHandle(tt.in)
 		if err != tt.errExpected {
 			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, err, tt.errExpected)
 		} else if err == nil && handle != tt.handleExpected {
@@ -267,7 +263,7 @@ func TestParseTwitterHandle(t *testing.T) {
 			"invalid scheme is invalid",
 			"ftp://twitter.com/jerry",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterURL,
 		},
 		{
 			"handle with underscore is valid",
@@ -285,49 +281,49 @@ func TestParseTwitterHandle(t *testing.T) {
 			"empty string is invalid",
 			"",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterURL,
 		},
 		{
 			"missing handle is invalid",
 			"https://twitter.com/",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterURL,
 		},
 		{
 			"single character handle is invalid",
 			"https://twitter.com/q",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with internal whitespace is invalid",
 			"jerry seinfeld",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with internal tab is invalid",
 			"jerry\tseinfeld",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with leading whitespace is invalid",
 			" jerry",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with trailing whitespace is invalid",
 			"jerry ",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with dots is invalid",
 			"https://twitter.com/jerry.seinfeld",
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with exactly 15 characters is valid",
@@ -339,18 +335,12 @@ func TestParseTwitterHandle(t *testing.T) {
 			"handle with more than 15 characters is invalid",
 			"https://twitter.com/" + strings.Repeat("A", 16),
 			social.TwitterHandle(""),
-			ErrInvalidTwitterHandle,
-		},
-		{
-			"'undefined' as a URL is invalid",
-			"undefined",
-			social.TwitterHandle(""),
-			ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterHandle,
 		},
 	}
 
 	for _, tt := range tests {
-		handle, err := TwitterHandle(tt.url)
+		handle, err := social.ParseTwitterHandle(tt.url)
 		if err != tt.errExpected {
 			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.url, err, tt.errExpected)
 		} else if handle != tt.handleExpected {
