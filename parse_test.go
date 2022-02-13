@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mtlynch/social-go/v2/social"
+	"github.com/mtlynch/social-go/v2"
 )
 
 func TestParseFacebookUsername(t *testing.T) {

@@ -3,7 +3,7 @@ package social_test
 import (
 	"fmt"
 
-	"github.com/mtlynch/social-go/v2/social"
+	"github.com/mtlynch/social-go/v2"
 )
 
 func Example_facebook() {
