@@ -11,7 +11,6 @@ import (
 var (
 	ErrInvalidFacebookUsername = errors.New("invalid facebook username")
 	ErrInvalidInstagram        = errors.New("invalid instagram handle")
-	ErrInvalidTwitterURL       = errors.New("invalid twitter URL")
 	ErrInvalidTwitterHandle    = errors.New("invalid twitter handle")
 
 	facebookUsernamePattern = regexp.MustCompile(`^[a-zA-Z0-9\.\-]{1,60}$`)
@@ -66,10 +65,10 @@ func ParseInstagramHandle(s string) (InstagramHandle, error) {
 func ParseTwitterHandle(twitterURL string) (TwitterHandle, error) {
 	t, err := parseSocialMediaUsername(twitterURL)
 	if err != nil {
-		return TwitterHandle(""), ErrInvalidTwitterURL
+		return TwitterHandle(""), ErrInvalidTwitterHandle
 	}
 	if t == "" {
-		return TwitterHandle(""), ErrInvalidTwitterURL
+		return TwitterHandle(""), ErrInvalidTwitterHandle
 	}
 
 	if !twitterHandlePattern.MatchString(t) {

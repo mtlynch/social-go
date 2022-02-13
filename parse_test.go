@@ -272,7 +272,7 @@ func TestParseTwitterHandle(t *testing.T) {
 			"invalid scheme is invalid",
 			"ftp://twitter.com/jerry",
 			social.TwitterHandle(""),
-			social.ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"handle with underscore is valid",
@@ -290,13 +290,13 @@ func TestParseTwitterHandle(t *testing.T) {
 			"empty string is invalid",
 			"",
 			social.TwitterHandle(""),
-			social.ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"missing handle is invalid",
 			"https://twitter.com/",
 			social.TwitterHandle(""),
-			social.ErrInvalidTwitterURL,
+			social.ErrInvalidTwitterHandle,
 		},
 		{
 			"single character handle is invalid",
