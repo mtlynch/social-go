@@ -19,6 +19,11 @@ var (
 	twitterHandlePattern    = regexp.MustCompile("^[A-Za-z0-9_]{4,15}$")
 )
 
+// ParseFacebookUsername parses an untrusted string into a FacebookUsername if
+// the string contained a well-formed Facebook username. If the string does not
+// include a username that conforms to Facebook's username rules, this function
+// returns an error. This function does not verify whether the username exists,
+// only that it adheres to Facebook's public rules for a username.
 func ParseFacebookUsername(username string) (FacebookUsername, error) {
 	if strings.ContainsAny(username, "@") {
 		return FacebookUsername(""), ErrInvalidFacebookUsername
@@ -35,8 +40,11 @@ func ParseFacebookUsername(username string) (FacebookUsername, error) {
 	return FacebookUsername(fb), nil
 }
 
-// InstagramHandle parses an InstagramHandle from either a raw string or a URL
-// that includes the user's handle.
+// ParseInstagramHandle parses an untrusted string into a InstagramHandle if the
+// string contained a well-formed Instagram handle. If the string does not
+// include a handle that conforms to Instagram's rules, this function returns an
+// error. This function does not verify whether the handle exists, only that it
+// adheres to Instagram's public rules for a handle.
 func ParseInstagramHandle(s string) (InstagramHandle, error) {
 	insta, err := parseSocialMediaUsername(s)
 	if err != nil {
@@ -50,8 +58,11 @@ func ParseInstagramHandle(s string) (InstagramHandle, error) {
 	return InstagramHandle(insta), nil
 }
 
-// TwitterHandle parses a TwitterHandle from a raw URL or handle string,
-// validating that the handle matches Twitter's restrictions on handles.
+// ParseTwitterHandle parses an untrusted string into a TwitterHandle if the
+// string contained a well-formed Twitter handle. If the string does not include
+// a handle that conforms to Instagram's rules, this function returns an error.
+// This function does not verify whether the handle exists, only that it adheres
+// to Twitter's public rules for a handle.
 func ParseTwitterHandle(twitterURL string) (TwitterHandle, error) {
 	t, err := parseSocialMediaUsername(twitterURL)
 	if err != nil {
