@@ -21,9 +21,6 @@ func ParseTwitterHandle(twitterURL string) (TwitterHandle, error) {
 	if err != nil {
 		return TwitterHandle(""), ErrInvalidTwitterHandle
 	}
-	if t == "" {
-		return TwitterHandle(""), ErrInvalidTwitterHandle
-	}
 
 	if !twitterHandlePattern.MatchString(t) {
 		return TwitterHandle(""), ErrInvalidTwitterHandle
