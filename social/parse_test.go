@@ -225,7 +225,7 @@ func TestParseInstagramHandle(t *testing.T) {
 		handle, err := social.ParseInstagramHandle(tt.in)
 		if err != tt.errExpected {
 			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, err, tt.errExpected)
-		} else if err == nil && handle != tt.handleExpected {
+		} else if handle != tt.handleExpected {
 			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, handle, tt.handleExpected)
 		}
 	}
