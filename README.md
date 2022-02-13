@@ -12,6 +12,12 @@ social-go parses usernames from various social media platforms, verifying that t
 
 social-go's checks are local - they don't verify whether the account actually exists on the platform, just that it conforms to the platform's published schemas for usernames.
 
+## Install
+
+```bash
+go get -u github.com/mtlynch/social-go/v2
+```
+
 ## Twitter
 
 ```golang
