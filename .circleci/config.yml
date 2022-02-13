@@ -1,0 +1,36 @@
+version: 2.1
+jobs:
+  check_whitespace:
+    docker:
+      - image: cimg/base:2021.04
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Check for trailing whitespace
+          command: ./dev-scripts/check-trailing-whitespace
+      - run:
+          name: Check that all text files end in a trailing newline
+          command: ./dev-scripts/check-trailing-newline
+  test:
+    docker:
+      - image: cimg/go:1.17.4
+    resource_class: medium
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Test package
+          command: dev-scripts/run-unit-tests --full
+      - store_artifacts:
+          path: .coverage.html
+      - run:
+          name: Verify formatting
+          command: dev-scripts/check-formatting
+workflows:
+  version: 2
+  build:
+    jobs:
+      - check_whitespace
+      - test
