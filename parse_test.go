@@ -151,25 +151,25 @@ func TestParseInstagramHandle(t *testing.T) {
 			"empty string is invalid",
 			"",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"missing handle is invalid",
 			"https://instagram.com",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"missing handle is invalid",
 			"https://instagram.com/",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"missing handle is invalid",
 			"https://instagram.com/@",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"single character handle is valid",
@@ -193,19 +193,19 @@ func TestParseInstagramHandle(t *testing.T) {
 			"leading space character is invalid",
 			" jack",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"trailing space character is invalid",
 			"jack ",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"internal tab character is invalid",
 			"jerry\tseinfeld",
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 		{
 			"handle with exactly 30 characters is valid",
@@ -217,7 +217,7 @@ func TestParseInstagramHandle(t *testing.T) {
 			"handle with more than 30 characters is invalid",
 			"https://instagram.com/" + strings.Repeat("A", 31),
 			social.InstagramHandle(""),
-			social.ErrInvalidInstagram,
+			social.ErrInvalidInstagramHandle,
 		},
 	}
 
