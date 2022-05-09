@@ -1,6 +1,7 @@
 package social_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func TestParseTwitterHandle(t *testing.T) {
-	var tests = []struct {
+	for _, tt := range []struct {
 		explanation    string
 		url            string
 		handleExpected social.TwitterHandle
@@ -122,14 +123,16 @@ func TestParseTwitterHandle(t *testing.T) {
 			social.TwitterHandle(""),
 			social.ErrInvalidTwitterHandle,
 		},
-	}
+	} {
+		t.Run(fmt.Sprintf("%s [%s]", tt.explanation, tt.url), func(t *testing.T) {
+			handle, err := social.ParseTwitterHandle(tt.url)
 
-	for _, tt := range tests {
-		handle, err := social.ParseTwitterHandle(tt.url)
-		if err != tt.errExpected {
-			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.url, err, tt.errExpected)
-		} else if handle != tt.handleExpected {
-			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.url, handle, tt.handleExpected)
-		}
+			if got, want := err, tt.errExpected; got != want {
+				t.Fatalf("err=%v, want=%v", got, want)
+			}
+			if got, want := handle, tt.handleExpected; got != want {
+				t.Errorf("handle=%v, want=%v", got, want)
+			}
+		})
 	}
 }
