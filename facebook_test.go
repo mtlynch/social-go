@@ -1,6 +1,7 @@
 package social_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func TestParseFacebookUsername(t *testing.T) {
-	var tests = []struct {
+	for _, tt := range []struct {
 		explanation      string
 		in               string
 		expectedUsername social.FacebookUsername
@@ -104,14 +105,16 @@ func TestParseFacebookUsername(t *testing.T) {
 			"",
 			social.ErrInvalidFacebookUsername,
 		},
-	}
+	} {
+		t.Run(fmt.Sprintf("%s [%s]", tt.explanation, tt.in), func(t *testing.T) {
+			username, err := social.ParseFacebookUsername(tt.in)
 
-	for _, tt := range tests {
-		actualUsername, err := social.ParseFacebookUsername(tt.in)
-		if err != tt.expectedErr {
-			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, err, tt.expectedErr)
-		} else if actualUsername != tt.expectedUsername {
-			t.Errorf("%s: input [%s], got %v, want %v", tt.explanation, tt.in, err, tt.expectedErr)
-		}
+			if got, want := err, tt.expectedErr; got != want {
+				t.Fatalf("err=%v, want=%v", got, want)
+			}
+			if got, want := username, tt.expectedUsername; got != want {
+				t.Errorf("username=%v, want=%v", got, want)
+			}
+		})
 	}
 }
