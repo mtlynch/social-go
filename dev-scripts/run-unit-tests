@@ -32,6 +32,10 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 cd "${SCRIPT_DIR}/.."
 
 go test "${go_test_flags[@]}" ./...
+if [ ! -z "$full_test" ]; then
+  go tool cover -html .coverage.out -o .coverage.html
+fi
+
 go vet ./...
 
 # Install staticcheck if it's not present.
@@ -43,6 +47,11 @@ if [[ ! -f "${STATICCHECK_PATH}" ]]; then
 fi
 "${STATICCHECK_PATH}" ./...
 
-if [ ! -z "$full_test" ]; then
-  go tool cover -html .coverage.out -o .coverage.html
+# Install errcheck if it's not present.
+ERRCHECK_PATH="$(go env GOPATH)/bin/errcheck"
+readonly ERRCHECK_PATH
+readonly ERRCHECK_VERSION="v1.6.1"
+if [[ ! -f "${ERRCHECK_PATH}" ]]; then
+    go install "github.com/kisielk/errcheck@${ERRCHECK_VERSION}"
 fi
+"${ERRCHECK_PATH}" -ignoretests ./...
