@@ -118,3 +118,17 @@ func TestParseFacebookUsername(t *testing.T) {
 		})
 	}
 }
+
+func FuzzParseFacebookUsername(f *testing.F) {
+	f.Add("jerry")
+	f.Fuzz(func(t *testing.T, input string) {
+
+		username, err := social.ParseFacebookUsername(input)
+		if err != nil {
+			return
+		}
+		if got, want := username.String(), input; got != want {
+			t.Fatalf("mismatch: parsed=%s, want=%s", got, want)
+		}
+	})
+}

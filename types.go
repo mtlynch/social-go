@@ -12,3 +12,7 @@ type (
 	// URL or a leading @.
 	TwitterHandle string
 )
+
+func (f FacebookUsername) String() string {
+	return string(f)
+}
