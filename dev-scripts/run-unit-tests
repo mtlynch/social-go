@@ -31,16 +31,17 @@ set -u
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${SCRIPT_DIR}/.."
 
-# Install staticcheck if it's not present.
-STATICCHECK_PATH="$(go env GOPATH)/bin/staticcheck"
-if [ ! -f "${STATICCHECK_PATH}" ]; then
-    STATICCHECK_VERSION="2021.1.2"
-    go install "honnef.co/go/tools/cmd/staticcheck@${STATICCHECK_VERSION}"
-fi
-
 go test "${go_test_flags[@]}" ./...
 go vet ./...
-$STATICCHECK_PATH ./...
+
+# Install staticcheck if it's not present.
+STATICCHECK_PATH="$(go env GOPATH)/bin/staticcheck"
+readonly STATICCHECK_PATH
+readonly STATICCHECK_VERSION="2022.1.2"
+if [[ ! -f "${STATICCHECK_PATH}" ]]; then
+    go install "honnef.co/go/tools/cmd/staticcheck@${STATICCHECK_VERSION}"
+fi
+"${STATICCHECK_PATH}" ./...
 
 if [ ! -z "$full_test" ]; then
   go tool cover -html .coverage.out -o .coverage.html
